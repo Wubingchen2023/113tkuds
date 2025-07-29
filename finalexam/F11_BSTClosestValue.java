@@ -36,7 +36,6 @@ public class F11_BSTClosestValue {
             } else if (target > curVal) {
                 node = node.right;
             } else {
-                
                 break; // 完全相等，直接回傳
             }
         }
