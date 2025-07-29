@@ -1,61 +1,59 @@
-import java.util.*;
-
 public class F11_BSTClosestValue {
+    /*
+     * 在 BST 中尋找最接近 target 的節點值；若兩值等距則取較小者
+     * @param root BST 根節點
+     * @param target 目標值
+     * @return 與 target 差距最小的節點值
+     */
 
-    // 樹節點定義
     static class TreeNode {
-        int val;
-        TreeNode left, right;
-        TreeNode(int v) { 
-            val = v; 
-        }
+    int val;
+    TreeNode left;
+    TreeNode right;
+    TreeNode(int x) { 
+        val = x; 
     }
-
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-
-        int n = sc.nextInt(); // 節點數
-        TreeNode root = null;
-
-        for (int i = 0; i < n; i++) {
-            root = insert(root, sc.nextInt());
-        }
-
-        int target = sc.nextInt();
-
-        int closest = findClosestValue(root, target);
-        System.out.println("Closest: " + closest);
-    }
-
-    // 插入 BST（遞迴）
-    static TreeNode insert(TreeNode node, int val) {
-        if (node == null) return new TreeNode(val);
-        if (val < node.val)
-            node.left = insert(node.left, val);
-        else
-            node.right = insert(node.right, val);
-        return node;
-    }
-
-    // 迴圈方式尋找最接近目標的值（若等距取較小）
-    static int findClosestValue(TreeNode node, int target) {
-        int closest = node.val;
+}
+    
+    public int closestValue(TreeNode root, int target) {
+        int closest = root.val;
+        TreeNode node = root;
         while (node != null) {
-            int diff = Math.abs(node.val - target);
-            int closestDiff = Math.abs(closest - target);
+            int curVal = node.val;
+            // 計算當前節點與 target 的距離
+            int curDiff = Math.abs(curVal - target);
+            int bestDiff = Math.abs(closest - target);
 
-            if (diff < closestDiff || (diff == closestDiff && node.val < closest)) {
-                closest = node.val;
+            // 若更接近，或等距但節點值較小，則更新 closest
+            if (curDiff < bestDiff ||
+               (curDiff == bestDiff && curVal < closest)) {
+                closest = curVal;
             }
 
-            if (target < node.val) {
+            // 根據 BST 性質往左或往右
+            if (target < curVal) {
                 node = node.left;
-            } else if (target > node.val) {
+            } else if (target > curVal) {
                 node = node.right;
             } else {
-                break; // 完全相等時即為最佳解
+                
+                break; // 完全相等，直接回傳
             }
         }
         return closest;
+    }
+
+    public static void main(String[] args) {
+        TreeNode root = new TreeNode(10);
+        root.left = new TreeNode(5);
+        root.right = new TreeNode(15);
+        root.left.left = new TreeNode(2);
+        root.left.right = new TreeNode(7);
+        root.right.right = new TreeNode(20);
+
+        F11_BSTClosestValue solver = new F11_BSTClosestValue();
+        int target = 12;
+        int result = solver.closestValue(root, target);
+        System.out.println("Closest value to " + target + " is: " + result);
     }
 }
